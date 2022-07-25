@@ -1,0 +1,406 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "version" : "1.0.0",
+    "title" : "ExpenseAPI",
+    "description" : "Example API spec"
+  },
+  "paths" : {
+    "/expenses" : {
+      "summary" : "Represents all expenses",
+      "description" : "This resource represents all expenses in the system.\n",
+      "post" : {
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/NewExpenseRequest"
+        },
+        "responses" : {
+          "201" : {
+            "$ref" : "#/components/responses/SuccessResponse"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/expenses/{expenseid}" : {
+      "summary" : "Represents an expense",
+      "description" : "This resource represents an individual expense in the system. Each expense is identified by a numeric `expenseid`.\n",
+      "get" : {
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/expenseIdParam"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success Response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "count" : {
+                      "type" : "integer",
+                      "description" : "Standard field returned for all routes; value will always be 1 when returning individual resource."
+                    },
+                    "status" : {
+                      "type" : "string",
+                      "description" : "Standard field returned for all routes; value changes depending on request status. For 200 status, value will be \"Success\"."
+                    },
+                    "expense" : {
+                      "$ref" : "#/components/schemas/Expense"
+                    }
+                  },
+                  "example" : {
+                    "count" : 1,
+                    "status" : "Success",
+                    "expense" : {
+                      "companyid" : 1,
+                      "companyname" : "Example Company",
+                      "contactid" : 7,
+                      "contactname" : "Peter Parker",
+                      "cost" : 100,
+                      "date" : "2021-03-28T00:00:00",
+                      "description" : "Example expense description.",
+                      "divisionid" : 1,
+                      "id" : 275,
+                      "invoiced" : false,
+                      "name" : "Example Expense",
+                      "projectid" : 1276,
+                      "projectnumber" : "50337 16-05-21",
+                      "projecttitle" : "Example Project Title",
+                      "taxable" : true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          }
+        }
+      },
+      "put" : {
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/expenseIdParam"
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/UpdateExpenseRequest"
+        },
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/SuccessResponse"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          }
+        }
+      },
+      "delete" : {
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/expenseIdParam"
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/SuccessResponse"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/ErrorResponse"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ErrorProps" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "Status field returned; will always equal 'Error'.",
+            "enum" : [ "Error" ],
+            "example" : "Error"
+          },
+          "details" : {
+            "type" : "array",
+            "description" : "An array of error descriptions.",
+            "items" : {
+              "type" : "string",
+              "example" : "Example error message"
+            }
+          }
+        }
+      },
+      "SuccessProps" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "Message field returned; will correspond to action completed.",
+            "example" : "Expense updated."
+          },
+          "status" : {
+            "description" : "Status field returned; will always equal 'Success'.",
+            "type" : "string",
+            "enum" : [ "Success" ],
+            "example" : "Success"
+          },
+          "details" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "description" : "Expense name property.",
+                  "example" : "Sample Expense"
+                },
+                "id" : {
+                  "type" : "integer",
+                  "description" : "Expense ID property.",
+                  "example" : 132
+                }
+              },
+              "example" : {
+                "name" : "Sample Expense",
+                "id" : 132
+              }
+            }
+          }
+        }
+      },
+      "Expense" : {
+        "type" : "object",
+        "description" : "Object containing the expense data.",
+        "properties" : {
+          "companyid" : {
+            "type" : "integer",
+            "description" : "ID of company linked to expense.",
+            "example" : 50
+          },
+          "companyname" : {
+            "type" : "string",
+            "description" : "Name of company linked to expense.",
+            "example" : "Coca Cola"
+          },
+          "contactid" : {
+            "type" : "integer",
+            "description" : "ID of contact linked to expense.",
+            "example" : 7
+          },
+          "contactname" : {
+            "type" : "string",
+            "description" : "Name of contact linked to expense.",
+            "example" : "Peter Parker"
+          },
+          "cost" : {
+            "type" : "number",
+            "description" : "Expense cost property.",
+            "example" : 599.99
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "Date in yyyy-mm-ddT:00:00:00 format",
+            "pattern" : "^[1-2][0-9]{3}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])T00:00:00$",
+            "example" : "2021-03-28T00:00:00"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the expense.",
+            "example" : "Battery replacement."
+          },
+          "divisionid" : {
+            "type" : "integer",
+            "description" : "ID of division linked to expense.",
+            "example" : 1
+          },
+          "id" : {
+            "type" : "integer",
+            "description" : "Expense ID property.",
+            "example" : 132
+          },
+          "invoiced" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the expense has been invoiced.",
+            "example" : false
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Expense name property.",
+            "example" : "Sample Expense"
+          },
+          "projectid" : {
+            "type" : "integer",
+            "description" : "ID of the project linked to expense.",
+            "example" : 512
+          },
+          "projectnumber" : {
+            "type" : "string",
+            "description" : "Number property of the project linked to expense.",
+            "example" : "50337 16-05-21"
+          },
+          "projecttitle" : {
+            "type" : "string",
+            "description" : "Title of the project linked to expense.",
+            "example" : "My Project Title"
+          },
+          "taxable" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the expense is taxable.",
+            "example" : true
+          }
+        }
+      },
+      "NewExpenseProps" : {
+        "type" : "object",
+        "description" : "Object containing properties which can be used to create a new expense.",
+        "properties" : {
+          "cost" : {
+            "type" : "number",
+            "description" : "Expense cost property.",
+            "example" : 599.99
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Expense name property.",
+            "example" : "Sample Expense"
+          },
+          "projectid" : {
+            "type" : "integer",
+            "description" : "ID of the project linked to expense.",
+            "example" : 512
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "Date in yyyy-mm-dd format OR Relative date - +/-Xd/w/m/y",
+            "pattern" : "(^[1][9][0-9]{2}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$)|(^[2][0][0-9]{2}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$)|(^(\\+|-)[0-9]+(d|w|m|y)$)",
+            "example" : "+3w"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the expense.",
+            "example" : "Battery replacement."
+          },
+          "invoiced" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the expense has been invoiced.",
+            "example" : false
+          },
+          "taxable" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the expense is taxable.",
+            "example" : true
+          }
+        },
+        "required" : [ "cost", "name", "projectid" ]
+      },
+      "UpdateExpenseProps" : {
+        "type" : "object",
+        "description" : "Object containing properties which can be used to update an existing expense.",
+        "properties" : {
+          "cost" : {
+            "type" : "number",
+            "description" : "Expense cost property.",
+            "example" : 599.99
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Expense name property.",
+            "example" : "Sample Expense"
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "Date in yyyy-mm-dd format OR Relative date - +/-Xd/w/m/y",
+            "pattern" : "(^[1][9][0-9]{2}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$)|(^[2][0][0-9]{2}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$)|(^(\\+|-)[0-9]+(d|w|m|y)$)",
+            "example" : "+3w"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the expense.",
+            "example" : "Battery replacement."
+          },
+          "invoiced" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the expense has been invoiced.",
+            "example" : false
+          },
+          "taxable" : {
+            "type" : "boolean",
+            "description" : "Indicates whether the expense is taxable.",
+            "example" : true
+          }
+        }
+      }
+    },
+    "requestBodies" : {
+      "NewExpenseRequest" : {
+        "description" : "Request body for creating a new expense.",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/NewExpenseProps"
+            }
+          }
+        }
+      },
+      "UpdateExpenseRequest" : {
+        "description" : "Request body for updating an existing expense.",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/UpdateExpenseProps"
+            }
+          }
+        }
+      }
+    },
+    "responses" : {
+      "ErrorResponse" : {
+        "description" : "Error response if resource not found or params/request body invalid.",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorProps"
+            }
+          }
+        }
+      },
+      "SuccessResponse" : {
+        "description" : "Success response if resource successfully fetched/created/updated/deleted.",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SuccessProps"
+            }
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "expenseIdParam" : {
+        "in" : "path",
+        "required" : true,
+        "name" : "expenseid",
+        "description" : "ID property of expense.",
+        "schema" : {
+          "type" : "integer",
+          "example" : 213
+        }
+      }
+    }
+  },
+  "servers" : [ {
+    "description" : "test",
+    "url" : "http://0192.168.94.31:7002"
+  } ]
+}
